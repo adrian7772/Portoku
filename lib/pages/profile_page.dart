@@ -17,7 +17,7 @@ class _ProfilePageState extends State<ProfilePage>
   static const Color _accentBlue = Color(0xFF3B82F6);
   static const Color _lightBlue = Color(0xFF7DD3FC);
 
-  // status subscribe per akun (in-memory)
+
   static final Map<String, bool> _subscribedByAccount = {};
 
   bool get _isSubscribed => _subscribedByAccount[widget.accountId] ?? false;
@@ -91,7 +91,7 @@ class _ProfilePageState extends State<ProfilePage>
         body: ListView(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
           children: [
-            // ===== Unified Profile Card =====
+
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -109,7 +109,7 @@ class _ProfilePageState extends State<ProfilePage>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // top row: avatar + name + followers
+
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -181,7 +181,7 @@ class _ProfilePageState extends State<ProfilePage>
 
                   const SizedBox(height: 16),
 
-                  // buttons: subscribe + lihat video (sejajar)
+
                   Row(
                     children: [
                       Expanded(

@@ -98,9 +98,9 @@ class HomePage extends StatelessWidget {
                   const SizedBox(width: 10),
                   FilledButton(
                     onPressed: () {
-                      // Pindah tab Explore lebih “benar”
+
                       DefaultTabController.maybeOf(context);
-                      // Karena kita pakai bottom nav, user tinggal tap Explore.
+
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Tap tab Explore di bawah 👇')),
                       );

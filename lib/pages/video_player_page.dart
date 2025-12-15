@@ -2,8 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
+import '../state/tab_swipe_lock.dart';
 
-// ✅ Tambahan untuk drawer profil (sama seperti sebelumnya)
+
 import 'package:firebase_auth/firebase_auth.dart';
 import '../theme/app_theme.dart';
 
@@ -29,7 +30,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage>
   bool _showControls = true;
   Timer? _hideTimer;
 
-  // animasi kecil untuk like/dislike pulse
+
   late final AnimationController _pulse = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 180),
@@ -37,13 +38,15 @@ class _VideoPlayerPageState extends State<VideoPlayerPage>
     upperBound: 1.0,
   );
 
-  // Tema warna “light blue + navy”
+
   static const Color _navy = Color(0xFF0B1B3A);
   static const Color _lightBlue = Color(0xFF7DD3FC);
 
   @override
   void initState() {
     super.initState();
+    TabSwipeLock.acquire();
+
     final item = videos.firstWhere((v) => v.id == widget.videoId);
 
     _controller = VideoPlayerController.asset(item.assetPath);
@@ -80,6 +83,8 @@ class _VideoPlayerPageState extends State<VideoPlayerPage>
 
   @override
   void dispose() {
+    TabSwipeLock.release();
+
     _cancelAutoHide();
     _controller.removeListener(_onVideoStateChanged);
     _controller.dispose();
@@ -129,8 +134,19 @@ class _VideoPlayerPageState extends State<VideoPlayerPage>
     setState(() => _speed = s);
   }
 
+
+  Future<void> _cycleSpeed() async {
+    const order = <double>[1.5, 2.0, 0.5, 1.0];
+    final idx = order.indexOf(_speed);
+    final next = order[(idx + 1) % order.length];
+    await _setSpeed(next);
+
+
+    TabSwipeLock.release();
+  }
+
   Future<void> _openComments() async {
-    // animasi kecil saat tekan komentar
+
     await _pulse.forward();
     await _pulse.reverse();
 
@@ -162,8 +178,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage>
 
     _controller.pause();
 
-    // ✅ PENTING:
-    // pakai rootNavigator agar fullscreen menutupi scaffold yang punya bottom nav
+
     await Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         builder: (_) => _FullscreenVideoPage(
@@ -195,18 +210,17 @@ class _VideoPlayerPageState extends State<VideoPlayerPage>
 
     final description = item.description;
 
-
     return Scaffold(
       backgroundColor: _navy,
 
-      // ✅ Sidebar (isinya sama seperti ProfileDrawer sebelumnya)
+
       drawer: const _ProfileDrawerSame(),
 
       appBar: AppBar(
         backgroundColor: _navy,
         foregroundColor: Colors.white,
 
-        // ✅ tombol hamburger kiri untuk buka sidebar
+
         leading: Builder(
           builder: (context) => IconButton(
             icon: const Icon(Icons.menu_rounded, color: Colors.white),
@@ -216,7 +230,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage>
 
         title: Text(item.title),
         actions: [
-          // Komentar dengan animasi pulse kecil
+
           AnimatedBuilder(
             animation: _pulse,
             builder: (_, __) {
@@ -231,21 +245,26 @@ class _VideoPlayerPageState extends State<VideoPlayerPage>
               );
             },
           ),
-          PopupMenuButton<double>(
-            initialValue: _speed,
-            onSelected: _setSpeed,
-            itemBuilder: (_) => const [
-              PopupMenuItem(value: 0.5, child: Text('0.5x')),
-              PopupMenuItem(value: 1.0, child: Text('1.0x')),
-              PopupMenuItem(value: 1.5, child: Text('1.5x')),
-              PopupMenuItem(value: 2.0, child: Text('2.0x')),
-            ],
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Center(
-                child: Text(
-                  '${_speed}x',
-                  style: const TextStyle(color: Colors.white),
+
+
+          Listener(
+            onPointerDown: (_) => TabSwipeLock.acquire(),
+            onPointerUp: (_) => TabSwipeLock.release(),
+            onPointerCancel: (_) => TabSwipeLock.release(),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(12),
+              onTap: () async {
+                await _pulse.forward();
+                await _pulse.reverse();
+                await _cycleSpeed();
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Center(
+                  child: Text(
+                    '${_speed}x',
+                    style: const TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
             ),
@@ -263,7 +282,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage>
           return ListView(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
             children: [
-              // ===== Video Card =====
+
               Container(
                 decoration: BoxDecoration(
                   color: const Color(0xFF0F2A54),
@@ -287,7 +306,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage>
                         children: [
                           Positioned.fill(child: VideoPlayer(_controller)),
 
-                          // ===== Controls Overlay (modern) =====
+    
                           Positioned.fill(
                             child: IgnorePointer(
                               ignoring: !_showControls,
@@ -298,7 +317,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage>
                                   color: Colors.black26,
                                   child: Stack(
                                     children: [
-                                      // tengah: rewind | play/pause | forward
+
                                       Center(
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
@@ -324,7 +343,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage>
                                         ),
                                       ),
 
-                                      // fullscreen (pojok kanan bawah)
+                             
                                       Positioned(
                                         right: 6,
                                         bottom: 42,
@@ -334,7 +353,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage>
                                         ),
                                       ),
 
-                                      // ===== Progress bar + waktu (selalu tampil) =====
+                              
                                       Positioned(
                                         left: 0,
                                         right: 0,
@@ -422,7 +441,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage>
 
               const SizedBox(height: 14),
 
-              // ===== Info Card =====
+   
               Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
@@ -497,9 +516,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage>
   }
 }
 
-// =========================================================
-// ✅ Drawer internal (isinya sama seperti ProfileDrawer kamu)
-// =========================================================
+
 
 class _ProfileDrawerSame extends StatelessWidget {
   const _ProfileDrawerSame();
@@ -653,8 +670,7 @@ class _InfoTileSame extends StatelessWidget {
   }
 }
 
-/// Tombol bulat modern “glass” + animasi tekan
-/// (DIBUAT LEBIH KECIL sesuai request)
+
 class _GlassCircleButton extends StatefulWidget {
   final IconData icon;
   final VoidCallback onPressed;
@@ -706,7 +722,7 @@ class _GlassCircleButtonState extends State<_GlassCircleButton> {
   }
 }
 
-/// Like/Dislike: ikon + angka dengan animasi angka (AnimatedSwitcher)
+
 class _IconCountButton extends StatefulWidget {
   final bool active;
   final Color activeColor;
@@ -771,7 +787,7 @@ class _IconCountButtonState extends State<_IconCountButton> {
   }
 }
 
-/// Fullscreen page: controller sama + auto-orientasi landscape + immersive
+
 class _FullscreenVideoPage extends StatefulWidget {
   final VideoPlayerController controller;
   final Duration initialPosition;

@@ -36,7 +36,7 @@ class PortokuApp extends StatelessWidget {
         centerTitle: false,
       ),
 
-      // ✅ Material 3 NavigationBar (recommended)
+
       navigationBarTheme: const NavigationBarThemeData(
         backgroundColor: navy2,
         indicatorColor: Color(0xFF163A73),
@@ -48,7 +48,7 @@ class PortokuApp extends StatelessWidget {
         ),
       ),
 
-      // ✅ kalau kamu pakai BottomNavigationBar (opsional aman)
+
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: navy2,
         selectedItemColor: accent,

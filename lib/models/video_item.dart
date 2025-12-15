@@ -4,10 +4,9 @@ class VideoItem {
   final String title;
   final String assetPath;
 
-  // ✅ baru (sudah ada)
+
   final String description;
 
-  // ✅ tambah ini untuk thumbnail lokal
   final String thumbnailAsset;
 
   const VideoItem({
@@ -16,6 +15,6 @@ class VideoItem {
     required this.title,
     required this.assetPath,
     required this.description,
-    required this.thumbnailAsset, // ✅ tambah
+    required this.thumbnailAsset, 
   });
 }

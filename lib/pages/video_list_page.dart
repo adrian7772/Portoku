@@ -2,18 +2,37 @@ import 'package:flutter/material.dart';
 import '../data/dummy_data.dart';
 import 'video_player_page.dart';
 
-// ✅ samakan isi drawer seperti ProfileDrawer
 import 'package:firebase_auth/firebase_auth.dart';
 import '../theme/app_theme.dart';
 
-class VideoListPage extends StatelessWidget {
+import '../state/tab_swipe_lock.dart';
+
+class VideoListPage extends StatefulWidget {
   final String accountId;
   const VideoListPage({super.key, required this.accountId});
 
   @override
+  State<VideoListPage> createState() => _VideoListPageState();
+}
+
+class _VideoListPageState extends State<VideoListPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    TabSwipeLock.acquire();
+  }
+
+  @override
+  void dispose() {
+    TabSwipeLock.release();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final acc = accounts.firstWhere((a) => a.id == accountId);
-    final list = videos.where((v) => v.accountId == accountId).toList();
+    final acc = accounts.firstWhere((a) => a.id == widget.accountId);
+    final list = videos.where((v) => v.accountId == widget.accountId).toList();
 
     const navy = Color(0xFF0A1A2F);
     const navyLight = Color(0xFF102A43);
@@ -22,14 +41,14 @@ class VideoListPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: navy,
 
-      // ✅ DRAWER: ISINYA DISAMAKAN DENGAN ProfileDrawer
+
       drawer: const _ProfileDrawerSame(),
 
       appBar: AppBar(
         elevation: 0,
         centerTitle: false,
 
-        // ✅ tombol sidebar kiri (tanpa ubah struktur halaman)
+
         leading: Builder(
           builder: (context) => IconButton(
             icon: const Icon(Icons.menu_rounded, color: Colors.white),
@@ -75,6 +94,7 @@ class VideoListPage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
+                        settings: const RouteSettings(name: '/videoPlayer'),
                         builder: (_) => VideoPlayerPage(videoId: v.id),
                       ),
                     );
@@ -94,63 +114,64 @@ class VideoListPage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // ===== Thumbnail =====
-Stack(
-  alignment: Alignment.center,
-  children: [
-    // ✅ Thumbnail dari lokal (assets)
-    ClipRRect(
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-      child: SizedBox(
-        height: 160,
-        width: double.infinity,
-        child: Image.asset(
-          v.thumbnailAsset,           // ✅ path thumbnail dari dummy_data.dart
-          fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) {
-            // fallback kalau file gak ketemu / path salah
-            return Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    accentBlue.withOpacity(0.35),
-                    navy,
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    ),
 
-    // ✅ overlay biar icon play tetap jelas
-    Container(
-      height: 160,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-        color: Colors.black.withOpacity(0.18),
-      ),
-    ),
+                        Stack(
+                          alignment: Alignment.center,
+                          children: [
 
-    // tombol play
-    Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.5),
-        shape: BoxShape.circle,
-      ),
-      child: const Icon(
-        Icons.play_arrow_rounded,
-        size: 36,
-        color: Colors.white,
-      ),
-    ),
-  ],
-),
+                            ClipRRect(
+                              borderRadius: const BorderRadius.vertical(
+                                  top: Radius.circular(16)),
+                              child: SizedBox(
+                                height: 160,
+                                width: double.infinity,
+                                child: Image.asset(
+                                  v.thumbnailAsset,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) {
 
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            accentBlue.withOpacity(0.35),
+                                            navy,
+                                          ],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+
+
+                            Container(
+                              height: 160,
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(16)),
+                                color: Colors.black.withOpacity(0.18),
+                              ),
+                            ),
+
+                            // tombol play
+                            Container(
+                              padding: const EdgeInsets.all(14),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.5),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.play_arrow_rounded,
+                                size: 36,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
 
                         // ===== Info =====
                         Padding(
@@ -188,10 +209,6 @@ Stack(
   }
 }
 
-/* =========================================================
-   Drawer internal: isinya sama dengan ProfileDrawer kamu
-   (tanpa import file ProfileDrawer, jadi struktur VideoListPage tetap)
-   ========================================================= */
 
 class _ProfileDrawerSame extends StatelessWidget {
   const _ProfileDrawerSame();

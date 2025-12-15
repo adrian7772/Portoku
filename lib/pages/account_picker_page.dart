@@ -145,17 +145,18 @@ class _AccountPickerPageState extends State<AccountPickerPage> {
               borderRadius: BorderRadius.circular(22),
               onTap: () {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => VideoListPage(accountId: a.id),
-                  ),
-                );
+  context,
+  MaterialPageRoute(
+    settings: const RouteSettings(name: '/videoList'),
+    builder: (_) => VideoListPage(accountId: a.id),
+  ),
+);
+
               },
               child: Padding(
                 padding: const EdgeInsets.all(14),
                 child: Row(
                   children: [
-                    // ✅ avatar (dari dummy_data: avatarAsset)
                     Container(
                       width: 46,
                       height: 46,

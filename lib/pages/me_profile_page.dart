@@ -9,7 +9,7 @@ class MeProfilePage extends StatelessWidget {
   Future<void> _logout(BuildContext context) async {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     await FirebaseAuth.instance.signOut();
-    // AuthGate otomatis balik ke LoginPage
+
   }
 
   @override

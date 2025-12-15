@@ -14,7 +14,7 @@ class _LoginPageState extends State<LoginPage> {
   bool loading = false;
   bool _obscure = true;
 
-  // ===== Colors (Navy Theme) =====
+
   static const Color _navy = Color(0xFF0A1A2F);
   static const Color _navy2 = Color(0xFF0F2A54);
   static const Color _accent = Color(0xFF3B82F6);
@@ -94,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
       body: SafeArea(
         child: Stack(
           children: [
-            // ===== Subtle background glow =====
+
             Positioned(
               top: -120,
               left: -120,
@@ -120,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
 
-            // ===== Content =====
+
             Center(
               child: SingleChildScrollView(
                 padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + bottomInset),
@@ -145,7 +145,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        // ===== Logo + Title =====
+
                         Row(
                           children: [
                             Container(
@@ -196,7 +196,7 @@ class _LoginPageState extends State<LoginPage> {
 
                         const SizedBox(height: 18),
 
-                        // ===== Inputs =====
+
                         TextField(
                           controller: emailCtrl,
                           keyboardType: TextInputType.emailAddress,
@@ -232,7 +232,7 @@ class _LoginPageState extends State<LoginPage> {
 
                         const SizedBox(height: 18),
 
-                        // ===== Buttons / Loading =====
+
                         if (loading)
                           const Center(
                             child: Padding(
@@ -289,7 +289,7 @@ class _LoginPageState extends State<LoginPage> {
 
                         const SizedBox(height: 10),
 
-                        // ===== Small footer text =====
+
                         Text(
                           'Dengan masuk, kamu menyetujui kebijakan penggunaan aplikasi.',
                           textAlign: TextAlign.center,

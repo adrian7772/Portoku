@@ -4,6 +4,8 @@ import 'home_page.dart';
 import 'account_picker_page.dart';
 import 'me_profile_page.dart';
 
+import '../state/tab_swipe_lock.dart';
+
 class BerandaPage extends StatefulWidget {
   const BerandaPage({super.key});
 
@@ -18,7 +20,7 @@ class _BerandaPageState extends State<BerandaPage> {
   final _exploreKey = GlobalKey<NavigatorState>();
   final _profileKey = GlobalKey<NavigatorState>();
 
-  late final PageController _pageCtrl = PageController(initialPage: 0);
+  late final PageController _pageCtrl = PageController(initialPage: _index);
 
   GlobalKey<NavigatorState> get _currentKey {
     switch (_index) {
@@ -59,31 +61,18 @@ class _BerandaPageState extends State<BerandaPage> {
       nav.pop();
       return false;
     }
-    return await _showExitDialog();
-  }
 
-  Widget _buildTabNavigator({
-    required GlobalKey<NavigatorState> key,
-    required Widget root,
-  }) {
-    return Navigator(
-      key: key,
-      onGenerateRoute: (settings) {
-        return MaterialPageRoute(builder: (_) => root);
-      },
-    );
+    if (_index != 0) {
+      _goToTab(0);
+      return false;
+    }
+
+    final exit = await _showExitDialog();
+    return exit;
   }
 
   void _goToTab(int i) {
-    if (i == _index) {
-      // Tap tab yang sama -> balik ke root halaman tab tsb
-      _currentKey.currentState?.popUntil((r) => r.isFirst);
-      return;
-    }
-
     setState(() => _index = i);
-
-    // animasi slide
     _pageCtrl.animateToPage(
       i,
       duration: const Duration(milliseconds: 260),
@@ -102,23 +91,31 @@ class _BerandaPageState extends State<BerandaPage> {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        body: PageView(
-          controller: _pageCtrl,
-          physics: const BouncingScrollPhysics(), // feel swipe ala IG
-          onPageChanged: (i) => setState(() => _index = i),
-          children: [
-            _buildTabNavigator(key: _homeKey, root: const HomePage()),
-            _buildTabNavigator(key: _exploreKey, root: const AccountPickerPage()),
-            _buildTabNavigator(key: _profileKey, root: const MeProfilePage()),
-          ],
-        ),
+        body: ValueListenableBuilder<bool>(
+  valueListenable: TabSwipeLock.locked,
+  builder: (context, locked, _) {
+    return PageView(
+      controller: _pageCtrl,
+      physics: locked
+          ? const NeverScrollableScrollPhysics()
+          : const BouncingScrollPhysics(),
+      onPageChanged: (i) => setState(() => _index = i),
+      children: [
+        _buildTabNavigator(key: _homeKey, root: const HomePage()),
+        _buildTabNavigator(key: _exploreKey, root: const AccountPickerPage()),
+        _buildTabNavigator(key: _profileKey, root: const MeProfilePage()),
+      ],
+    );
+  },
+),
+
         bottomNavigationBar: NavigationBar(
           selectedIndex: _index,
           onDestinationSelected: _goToTab,
           destinations: const [
             NavigationDestination(
               icon: Icon(Icons.home_outlined),
-              selectedIcon: Icon(Icons.home_rounded),
+              selectedIcon: Icon(Icons.home),
               label: 'Home',
             ),
             NavigationDestination(
@@ -134,6 +131,18 @@ class _BerandaPageState extends State<BerandaPage> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildTabNavigator({
+    required GlobalKey<NavigatorState> key,
+    required Widget root,
+  }) {
+    return Navigator(
+      key: key,
+      onGenerateRoute: (settings) {
+        return MaterialPageRoute(builder: (_) => root);
+      },
     );
   }
 }

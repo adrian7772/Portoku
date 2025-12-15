@@ -136,7 +136,6 @@ class _CommentSheetState extends State<CommentSheet>
 
             const SizedBox(height: 12),
 
-            // ===== List komentar (modern cards + animasi) =====
             Expanded(
               child: AnimatedBuilder(
                 animation: state,
@@ -263,7 +262,7 @@ class _CommentSheetState extends State<CommentSheet>
 
             const SizedBox(height: 10),
 
-            // ===== Input modern (glass) =====
+
             Container(
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
               decoration: BoxDecoration(
@@ -308,7 +307,7 @@ class _CommentSheetState extends State<CommentSheet>
                   ),
                   const SizedBox(width: 10),
 
-                  // tombol send modern + pulse
+
                   AnimatedBuilder(
                     animation: _pulse,
                     builder: (_, __) {

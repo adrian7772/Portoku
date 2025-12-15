@@ -3,7 +3,7 @@ class Account {
   final String username;
   final String displayName;
   final String bio;
-  final String avatarAsset; // kita pakai icon default saja, tapi field ini siap kalau mau asset foto
+  final String avatarAsset; 
   final int followers;
   final int following;
 
