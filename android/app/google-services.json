@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1017399620818",
+    "project_id": "flutter-280f1",
+    "storage_bucket": "flutter-280f1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1017399620818:android:c9eedcbf39d633511fe90b",
+        "android_client_info": {
+          "package_name": "com.example.portoku"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByASGRl4xXB2Uap28lzUzmIorN5dQCWVg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,54 @@
+name: portoku
+description: "A new Flutter project."
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  firebase_core: ^3.0.0
+  firebase_auth: ^5.0.0
+  cupertino_icons: ^1.0.8
+  video_player: ^2.10.1
+  shared_preferences: ^2.5.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/videos/
+    - assets/thumbs/
+    - assets/avatars/
+    - assets/icon/app_icon.png
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/app_icon.png"
+  min_sdk_android: 21
+
+  web:
+    generate: true
+    image_path: "assets/icon/app_icon.png"
+    background_color: "#0A1A2F"
+    theme_color: "#0A1A2F"
+
+  windows:
+    generate: true
+    image_path: "assets/icon/app_icon.png"
+    icon_size: 48
+
+  macos:
+    generate: true
+    image_path: "assets/icon/app_icon.png"
